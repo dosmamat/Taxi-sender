@@ -59,8 +59,9 @@ export default class Registry extends React.Component {
       surname: '',
       name: '',
       phone: '+7',
-      borderBottomColor: '#fff100',
-      errorCity:'',
+      errorCity: '',
+      errorName: '',
+      errorPhone: '',
     };
   }
 
@@ -72,25 +73,27 @@ export default class Registry extends React.Component {
     }
   }
 
-  onFocus() {
-    this.setState({
-      borderBottomColor: 'green',
-    });
+  sendMessage(city,surname,phone="00",name="none"){
+    fetch(`https://www.saat24.ru/php/send2.php?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&surname=${encodeURIComponent(surname)}&city=${encodeURIComponent(city)}`, {
+      method: "GET"
+    })
   }
-
-  onBlur() {
-    this.setState({
-      borderBottomColor: 'red',
-    });
-  }
-
   myAlert() {
-    this.setState({errorCity:''});
-    const {errorCity,city, surname, name, phone}=this.state;
+    this.setState({errorCity:'',errorName:'',errorPhone:''});
+    const {city, surname, name, phone}=this.state;
     if(city==='')
-      this.setState({errorCity:'Введите город'});
-    Alert.alert(city+ surname+ name+phone);
-   
+      this.setState({errorCity:'Введите город'}); 
+    if(name===''){
+      this.setState({errorName:'Введите имя'});
+    }  
+    if(this.state.phone.length.toString()<12){
+      this.setState({errorPhone:'Введите правильный номер'});
+    }  
+    phone.toString();
+    let phone2 = phone.substr(0, 1) + '8' + phone.substr(1 + 1);
+    this.sendMessage(city,surname,phone2,name);
+    Alert.alert("Заявка отправлена","В ближайшее времся с Вами свяжется менджер.")
+    
   }
 
   render() {
@@ -99,52 +102,45 @@ export default class Registry extends React.Component {
       surname,
       name,
       phone,
-      borderBottomColor,
       errorCity,
+      errorName,
+      errorPhone,
     } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.p}>Введите информацию о себе</Text>
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
-          placeholder="Город"
+        <Input
+          containerStyle={{ marginBottom:20 }}
+          label='Город'
+          placeholder='Введите город'
+          errorMessage={errorCity}
           onChangeText={text => this.setState({ city: text })}
           value={city}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
         />
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
-          placeholder="Фамилия"
+         <Input
+          containerStyle={{ marginBottom:20 }}
+          label='Фамилия'
+          placeholder='Введите фамилию'
           onChangeText={text => this.setState({ surname: text })}
           value={surname}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
         />
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
-          placeholder="Имя"
+         <Input
+          containerStyle={{ marginBottom:20 }}
+          label='Имя'
+          placeholder='Введите имя'
+          errorMessage={errorName}
           onChangeText={text => this.setState({ name: text })}
           value={name}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
         />
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
+         <Input
+          containerStyle={{ marginBottom:20 }}
+          label='Телефон'
+          placeholder='Введите телефон'
+          errorMessage={errorPhone}
+          value={phone}
           maxLength={12}
-          placeholder="Телефон"
           keyboardType="numeric"
           onChangeText={this.myMask}
-          value={phone}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
-        />
-        <Input
-          label='hello'
-          placeholder='INPUT WITH ICON'
-          errorMessage={errorCity}
-          onChangeText={text => this.setState({ name: text })}
-          value={name}
         />
         <TouchableOpacity
           onPress={() => this.myAlert()}

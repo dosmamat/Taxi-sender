@@ -6,6 +6,8 @@ import {
   Image,
   Alert,
   TouchableOpacity,
+  Share,
+  Linking
 } from 'react-native';
 const styles = StyleSheet.create({
   container: {
@@ -79,6 +81,17 @@ export default class Main extends React.Component {
     Alert.alert('click');
   }
 
+  onShare = () => {
+    Share.share({
+        message:
+          'Скачайте нашу программу по ссылке:  ',
+      })
+  };
+  callPhone(){
+    Linking.openURL(`tel:+7-915-015-69-82`);
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
@@ -99,13 +112,13 @@ export default class Main extends React.Component {
         </View>
         <View style={styles.footer}>
           <View style={styles.footerContent}>
-            <TouchableOpacity onPress={this.clikBt}>
+            <TouchableOpacity onPress={this.callPhone}>
               <Image source={require('../../../assets/img/handset.png') } style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
             <TouchableOpacity onPress={this.clikBt}>
               <Image source={require('../../../assets/img/q.png') } style={{width: 30, height: 30}} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.clikBt}>
+            <TouchableOpacity onPress={this.onShare}>
               <Image source={require('../../../assets/img/share.png') } style={{width: 30, height: 30}} />
             </TouchableOpacity>
           </View>

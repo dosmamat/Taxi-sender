@@ -15,6 +15,7 @@ export default class App extends React.Component {
     return (
       <View style={{ flex:1 }}>
         <StatusBar barStyle = "dark-content" hidden = {false}  translucent = {true}/>
+        {/* <Main/> */}
         {/* <Help/> */}
         <Registry/>
       </View>

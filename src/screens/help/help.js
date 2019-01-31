@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 120,
-    borderColor: 'green',
-    fontSize: 16,
+    borderColor: 'rgb(188, 197, 204)',
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
+    padding: 5,
+    borderRadius: 3,
     marginBottom: 20,
+    marginTop:10,
   },
   inputNew:{
     borderBottomColor: 'red',
@@ -69,7 +69,9 @@ export default class Help extends React.Component {
       question: '',
       name: '',
       phone: '+7',
-      borderBottomColor: '#fff100',
+      errorName: '',
+      errorPhone: '',
+      errorQuestion: '',
     };
   }
 
@@ -80,22 +82,28 @@ export default class Help extends React.Component {
       this.setState({phone:'+7'})
     }
   }
-
-  onFocus() {
-    this.setState({
-      borderBottomColor: 'green',
-    });
-  }
-
-  onBlur() {
-    this.setState({
-      borderBottomColor: 'red',
-    });
+  // доделать
+  sendMessage(city,surname,phone="00",name="none"){
+    fetch(`https://www.saat24.ru/php/send2.php?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&question=${encodeURIComponent(question)}`, {
+      method: "GET"
+    })
   }
 
   myAlert() {
+    this.setState({errorQuestion:'',errorName:'',errorPhone:''});
     const {question, name, phone}=this.state;
-    Alert.alert(question+ name+phone);
+    if(question==='')
+      this.setState({errorQuestion:'Введите вопрос'}); 
+    if(name===''){
+      this.setState({errorName:'Введите имя'});
+    }  
+    if(this.state.phone.length.toString()<12){
+      this.setState({errorPhone:'Введите правильный номер'});
+    }  
+    phone.toString();
+    let phone2 = phone.substr(0, 1) + '8' + phone.substr(1 + 1);
+    this.sendMessage(question,name,phone2);
+    Alert.alert("Заявка отправлена","В ближайшее времся с Вами свяжется менджер.")
    
   }
 
@@ -104,50 +112,39 @@ export default class Help extends React.Component {
       question,
       name,
       phone,
-      borderBottomColor,
+      errorName,
+      errorPhone,
+      errorQuestion,
     } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.p}>Задать вопрос</Text>
-        <TextInput
+        <Input
+          label='Вопрос'
+          placeholder='Ваш вопрос'
           multiline={true}
-          style={styles.textArea}
-          placeholder="Ваш вопрос"
+          inputContainerStyle={styles.textArea}
+          errorMessage={errorQuestion}
           onChangeText={text => this.setState({ question: text })}
           value={question}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
-        />
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
-          placeholder="Фамилия"
-          onChangeText={text => this.setState({ name: text })}
-          value={name}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
-        />
-        <TextInput
-          style={[styles.input, { borderBottomColor }]}
-          maxLength={12}
-          placeholder="Телефон"
-          keyboardType="numeric"
-          onChangeText={this.myMask}
-          value={phone}
-          onBlur={() => this.onBlur()}
-          onFocus={() => this.onFocus()}
         />
         <Input
-          label='hello'
-          placeholder='INPUT WITH ICON'
-          // style={[styles.input, { borderBottomColor }]}
-          // inputContainerStyle={styles.inputNew}
-          errorMessage='lllo'
+          label='Имя'
+          placeholder='Введите имя'
+          errorMessage={errorName}
           onChangeText={text => this.setState({ name: text })}
           value={name}
-          // onBlur={() => this.onBlur()}
-          // onFocus={() => this.onFocus()}
-          
         />
+        <Input
+          label='Телефон'
+          placeholder='Введите телефон'
+          errorMessage={errorPhone}
+          maxLength={12}
+          keyboardType="numeric"
+          onChangeText={text => this.setState({ phone: text })}
+          value={phone}
+        />
+      
         <TouchableOpacity
           onPress={() => this.myAlert()}
           style={styles.button2}
