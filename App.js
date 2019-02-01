@@ -7,18 +7,30 @@ import Main from './src/screens/main/main.js';
 import Info from './src/screens/info/info.js';
 import Registry from './src/screens/registry/registry.js';
 import Help from './src/screens/help/help.js';
-// #fff100 -желтый цвет везде
-// npm i react-native-elements
-export default class App extends React.Component {
+import {
+  createStackNavigator,
+  createAppContainer,
+} from "react-navigation";
 
-  render() {
-    return (
-      <View style={{ flex:1 }}>
-        <StatusBar barStyle = "dark-content" hidden = {false}  translucent = {true}/>
-        {/* <Main/> */}
-        {/* <Help/> */}
-        <Registry/>
-      </View>
-    );
-  }
+const Stack = createStackNavigator(
+  {
+    Home: Main,
+    Regis: Registry,
+    HelpPage: Help,
+    InfoPage: Info,
+  },
+  {
+    initialRouteName: 'Home',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: 'rgb(255, 230, 0)',
+      },
+      headerTintColor: '#000',
+    },
+  },
+);
+const AppContainer = createAppContainer(Stack);
+const App = () => {
+  return <AppContainer />;
 }
+export default App;

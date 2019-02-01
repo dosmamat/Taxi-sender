@@ -1,4 +1,5 @@
 import React from 'react';
+import MyButton from '../../componets/common/button';
 import {
   StyleSheet,
   Text,
@@ -9,12 +10,11 @@ import {
   Share,
   Linking
 } from 'react-native';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     flexDirection: 'column',
     alignSelf: 'stretch',
   },
@@ -45,19 +45,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
   },
-  button2: {
-    marginRight: 40,
-    marginLeft: 40,
-    marginTop: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    backgroundColor: 'rgb(255, 230, 0)',
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: '#fff',
-    width: 230,
-
-  },
   button3: {
     marginRight: 40,
     marginLeft: 40,
@@ -77,34 +64,44 @@ const styles = StyleSheet.create({
 });
 
 export default class Main extends React.Component {
-  clikBt() {
-    Alert.alert('click');
+  static navigationOptions = {
+    header: null,
+  };
+
+  static onShare() {
+    Share.share({
+      message:
+       'Скачайте нашу программу по ссылке:  ',
+    });
   }
 
-  onShare = () => {
-    Share.share({
-        message:
-          'Скачайте нашу программу по ссылке:  ',
-      })
-  };
-  callPhone(){
-    Linking.openURL(`tel:+7-915-015-69-82`);
+  static callPhone() {
+    Linking.openURL('tel:+7-915-015-69-82');
+  }
+  showRegis() {
+    this.props.navigation.navigate('Regis');
+  }
+
+  showInfo() {
+    this.props.navigation.navigate('InfoPage');
+  }
+
+  showHelp() {
+    this.props.navigation.navigate('HelpPage');
   }
 
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.centerContent}>  
-          <Image source={require('../../../assets/img/car-logo.png') } style={{width: 250, height: 130}} />
-          <Text style={styles.text}>Центр регистрации и обучения водителей sss</Text>
+        <View style={styles.centerContent}>
+          <Image source={require('../../../assets/img/car-logo.png')} style={{ width: 250, height: 130 }} />
+          <Text style={styles.text}>Центр регистрации и обучения водителей</Text>
+          <MyButton onPress={() => this.showRegis()}>
+            Зарегистрироваться
+          </MyButton>
           <TouchableOpacity
-            onPress={this.clikBt}
-            style={styles.button2}>
-            <Text style={styles.submitText}>Зарегистрироваться</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this.clikBt}
+            onPress={() => this.showInfo()}
             style={styles.button3}
           >
             <Text style={styles.submitText}>Информация</Text>
@@ -112,17 +109,17 @@ export default class Main extends React.Component {
         </View>
         <View style={styles.footer}>
           <View style={styles.footerContent}>
-            <TouchableOpacity onPress={this.callPhone}>
+            <TouchableOpacity onPress={Main.callPhone}>
               <Image source={require('../../../assets/img/handset.png') } style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.clikBt}>
-              <Image source={require('../../../assets/img/q.png') } style={{width: 30, height: 30}} />
+            <TouchableOpacity onPress={() => this.showHelp()}>
+              <Image source={require('../../../assets/img/q.png') } style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.onShare}>
-              <Image source={require('../../../assets/img/share.png') } style={{width: 30, height: 30}} />
+            <TouchableOpacity onPress={Main.onShare}>
+              <Image source={require('../../../assets/img/share.png') } style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
           </View>
-        </View> 
+        </View>
       </View>
     );
   }
